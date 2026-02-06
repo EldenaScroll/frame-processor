@@ -1,5 +1,6 @@
 import os
 import requests
+import datetime
 from fastapi import FastAPI, Request, HTTPException
 from pydantic import BaseModel
 
@@ -58,8 +59,8 @@ def process(req: ProcessReq, request: Request):
 
     # 2) Update status to 1
     out = cf_query(
-        "UPDATE space SET status = 1 WHERE lot_id = ? AND id = ?;",
-        [lot_id, SPACE_ID]
+        "UPDATE space SET status = 1, last_updated = ? WHERE lot_id = ? AND id = ?;",
+        [str(datetime.datetime.now()),lot_id, SPACE_ID]
     )
 
     return {"success": True, "space_id": SPACE_ID, "lot_id": lot_id, "update_result": out}
